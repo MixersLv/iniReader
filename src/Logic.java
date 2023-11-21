@@ -7,7 +7,6 @@ public class Logic {
     private final Scanner scanner;
     private String currentLine;
     private String sectionName;
-    private String tempSectionName = sectionName;
     private String key;
     private String value;
     private Map<String, Map<String, String>> sections = new HashMap<>();
@@ -33,6 +32,7 @@ public class Logic {
         }
 
     }
+
     public void ReadSection(){
         int index = currentLine.lastIndexOf("[");
         sectionName = currentLine.substring(index +1, currentLine.length()-1);
@@ -46,35 +46,25 @@ public class Logic {
 
         Map<String, String> currentSection = sections.get(sectionName);
         currentSection.put(key,value);
-
     }
 
-    public void getValue(String sNameSkey){
+    public String getValue(String searchString){
+        int dotindex = searchString.lastIndexOf(".");
+            String sectionName = searchString.substring(0, dotindex);
+            String settingName = searchString.substring(dotindex+1, searchString.length());
 
-        int dotIndex = sNameSkey.lastIndexOf(".");
-        String sName = sNameSkey.substring(0,dotIndex);
-        String sValue = sNameSkey.substring(dotIndex+1,sNameSkey.length());
+        if(sections.containsKey(sectionName)){
+            Map<String,String> outermap = sections.get(sectionName);
 
-        String sKey = null;
-        // finds whats the key name for the value
-        if(sections.containsKey(sName)){
-            Map<String,String> outermap = sections.get(sName);
+            if(outermap.containsKey(settingName)){
 
-            for(String key : outermap.keySet()){
-
-                if (key.equals(sValue)){
-                   sKey = key;
-                }
-            }
-
-
-            if(outermap.containsKey(sValue)){
-
-                if(outermap.get(sKey).isEmpty()){
-                    System.out.println("Key: "+ sKey +"\nValue: null");
+                if(outermap.get(settingName).isEmpty()){
+                    System.out.println("Key: "+ settingName +"\nValue: null"); // just visual
+                    return value = null;
                 }
                 else{
-                    System.out.println("Key: "+ sKey +"\nValue:" + outermap.get(sKey));
+                    System.out.println("Key: "+ settingName +"\nValue:" + outermap.get(settingName)); // just visual
+                    value = outermap.get(settingName);
                 }
 
             }
@@ -84,7 +74,9 @@ public class Logic {
         else{
             System.out.println("Key does not exist");
         }
+        return value;
 
     }
+
 
 }
